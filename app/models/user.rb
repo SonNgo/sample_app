@@ -7,7 +7,7 @@ class User < ActiveRecord::Base
                     format: { with: VALID_EMAIL_REGEX },
                     uniqueness: { case_sensitive: false }
   has_secure_password
-  validates :password, presence: true, length: { minimum: 6 }
+  validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
 
   def User.digest(string)
     cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST :
@@ -22,7 +22,7 @@ class User < ActiveRecord::Base
 
   def remember
     self.remember_token = User.new_token 
-    update_attribute(:remember_token, User.digest(remember_token)) 
+    update_attribute(:remember_digest, User.digest(remember_token)) 
   end
 
   def authenticated?(remember_token)
