@@ -14,18 +14,20 @@ before_action :admin_user, only: :destroy
 
   def new
     @user = User.new
+
   end
 
   def create
     @user = User.new(user_params)
+
     if @user.save
-      #do somehing
-      log_in(@user)
-      flash[:success] = "Welcome to the Sample App!"
-      redirect_to @user      
+      UserMailer.account_activation(@user).deliver_now
+      flash[:info]  = "Please check your email to activae your accoutnt"
+      redirect_to root_url 
     else 
       render 'new'
     end
+    #debugger
   end
 
   def edit
