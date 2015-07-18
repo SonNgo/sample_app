@@ -1,4 +1,5 @@
 class User < ActiveRecord::Base
+  has_many :microposts
   attr_accessor :remember_token, :activation_token, :reset_token
   before_save :downcase_email
   validates :name, presence: true, length: {maximum: 50}
@@ -8,6 +9,7 @@ class User < ActiveRecord::Base
                     uniqueness: { case_sensitive: false }
   has_secure_password
   validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
+  
 
   def User.digest(string)
     cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST :
@@ -60,5 +62,8 @@ class User < ActiveRecord::Base
     reset_sent_at < 2.hours.ago
   end
 
+  def feed
+    Micropost.where("user_id = ?", id)
+  end
 
 end

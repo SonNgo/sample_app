@@ -4,12 +4,12 @@ before_action :correct_user, only: [:edit, :update]
 before_action :admin_user, only: :destroy
 
   def index
-    @users = User.paginate(page: params[:page])
+    @users = User.paginate(page: params[:page], per_page: 10)
   end
   
   def show
     @user = User.find(params[:id])
-
+    @microposts = @user.microposts.paginate(page: params[:page], per_page: 20)
   end
 
   def new
@@ -41,14 +41,6 @@ before_action :admin_user, only: :destroy
       redirect_to @user
     else 
       render "edit"
-    end
-  end
-
-  def logged_in_user
-    unless logged_in?
-      store_location
-      flash[:danger] = "Please log in"
-      redirect_to login_url
     end
   end
 
